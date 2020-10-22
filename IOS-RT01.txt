@@ -1,6 +1,6 @@
 Building configuration...
 
-Current configuration : 2220 bytes
+Current configuration : 2150 bytes
 !
 ! Last configuration change at 08:23:13 UTC Thu Oct 22 2020
 !
@@ -117,10 +117,6 @@ redundancy
 ! 
 ! 
 !
-!
-interface Loopback100
- ip address 1.1.1.1 255.255.255.255
- shutdown
 !
 interface GigabitEthernet1
  vrf forwarding MGMT
