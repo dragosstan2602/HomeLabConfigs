@@ -1,0 +1,89 @@
+! Command: show running-config
+! device: vEOS-LSW01 (vEOS, EOS-4.24.0F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+hostname vEOS-LSW01
+!
+snmp-server community HomeReadWrite rw
+!
+spanning-tree mode mstp
+!
+aaa authorization exec default local
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$fosbrjWZeKE1y0yp$yDbRv.kzRgvtHPICwBwL55uUENshR2ugRrG3YsNUGCNTgFbPFAhnsv34N2rESkqSTGD/7ox25Bwqf4SUCSsib.
+!
+vlan 100
+   name VLAN_TEST_100
+!
+vlan 200
+   name VLAN_TEST_200
+   state suspend
+!
+vlan 300
+   name VLAN_TEST_300
+!
+vlan 400
+   name PROD_INTERNAL_K8s
+!
+vrf instance MGMT
+!
+interface Ethernet1
+   description vEOS-SSW01 - Ethernet1
+   no switchport
+   ip address 10.10.1.2/24
+!
+interface Ethernet2
+   description vEOS-SSW02 - Ethernet1
+   no switchport
+   ip address 10.20.1.2/24
+!
+interface Ethernet3
+   no switchport
+!
+interface Ethernet4
+!
+interface Ethernet5
+!
+interface Ethernet6
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Loopback111
+   ip address 111.1.1.1/32
+!
+interface Management1
+   vrf MGMT
+   ip address 192.168.0.21/24
+!
+ip routing
+no ip routing vrf MGMT
+!
+ip route 0.0.0.0/0 192.168.0.1
+!
+router bgp 201
+   !! 
+   maximum-paths 2 ecmp 2
+   neighbor SPINE peer group
+   neighbor SPINE maximum-routes 12000
+   neighbor 10.10.1.1 peer group SPINE
+   neighbor 10.10.1.1 remote-as 100
+   neighbor 10.10.1.1 description vEOS-SSW01
+   neighbor 10.20.1.1 peer group SPINE
+   neighbor 10.20.1.1 remote-as 100
+   neighbor 10.20.1.1 description vEOS-SSW02
+   network 111.1.1.1/32
+!
+management api http-commands
+   no shutdown
+   !
+   vrf MGMT
+      no shutdown
+!
+end

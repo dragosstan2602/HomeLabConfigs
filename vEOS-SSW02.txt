@@ -1,0 +1,79 @@
+! Command: show running-config
+! device: vEOS-SSW02 (vEOS, EOS-4.20.1F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+hostname vEOS-SSW02
+!
+snmp-server community HomeReadWrite rw
+!
+spanning-tree mode mstp
+!
+aaa authorization exec default local
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$6YR0.6nzSt6RdbBH$DedOh1tL0vvpTgBoTFRPXRXSiq.swJHX5IoLcD8dq4sy5ebSStm6DebVKPiyPRDYWjjQjcNoOb5njrdizk66m1
+!
+vrf definition MGMT
+   rd 100:1
+!
+interface Ethernet1
+   description vEOS-LSW01 - Ethernet2
+   no switchport
+   ip address 10.20.1.1/24
+!
+interface Ethernet2
+   description vEOS-LSW02 - Ethernet2
+   no switchport
+   ip address 10.20.2.1/24
+!
+interface Ethernet3
+   description vEOS-LSW03 - Ethernet2
+   no switchport
+   ip address 10.20.3.1/24
+!
+interface Ethernet4
+!
+interface Ethernet5
+!
+interface Ethernet6
+!
+interface Ethernet7
+   description vEOS-SSW01 - Ethernet7
+!
+interface Ethernet8
+   description vEOS-SSW01 - Ethernet8
+!
+interface Loopback102
+   ip address 102.1.1.1/32
+!
+interface Management1
+   vrf forwarding MGMT
+   ip address 192.168.0.26/24
+!
+ip route 0.0.0.0/0 192.168.0.1
+!
+ip routing
+no ip routing vrf MGMT
+!
+router bgp 100
+   maximum-paths 2 ecmp 2
+   neighbor LEAF peer-group
+   neighbor LEAF maximum-routes 12000 
+   neighbor 10.20.1.2 peer-group LEAF
+   neighbor 10.20.1.2 remote-as 201
+   neighbor 10.20.2.2 peer-group LEAF
+   neighbor 10.20.2.2 remote-as 202
+   neighbor 10.20.3.2 peer-group LEAF
+   neighbor 10.20.3.2 remote-as 203
+!
+management api http-commands
+   no shutdown
+   !
+   vrf MGMT
+      no shutdown
+!
+end

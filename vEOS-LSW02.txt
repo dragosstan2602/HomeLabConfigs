@@ -1,0 +1,85 @@
+! Command: show running-config
+! device: vEOS-LSW02 (vEOS, EOS-4.20.1F)
+!
+! boot system flash:/vEOS-lab.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+hostname vEOS-LSW02
+!
+snmp-server community HomeReadWrite rw
+!
+spanning-tree mode mstp
+!
+aaa authorization exec default local
+!
+no aaa root
+!
+username admin privilege 15 role network-admin secret sha512 $6$ugGeKeEEXI/GEi12$8lHmyJ7yYFlanyUBAXw5ojGC8Joo1bICZ9aM4RBMZyKhDE9SK46Q1EMDwniME/xzKr1DYFXpyia53Iurs.IoS1
+username dragos privilege 15 role network-admin secret sha512 $6$m1PL3UCjdSxmXrb7$NVg30y9m1bAKt3HiJWlKKccicaP7cLU6V0EhyGx/TjjL8PeWKBflmBn3WQDtSmki/u6Qix/lnRpWMJDtnpzCD/
+!
+vlan 100
+   name VLAN_TEST_100
+!
+vlan 200
+   name VLAN_TEST_200
+!
+vlan 1000
+   name OUTSIDE_DMZ
+!
+vlan 2000
+   name INSIDE_DMZ
+!
+vrf definition MGMT
+   rd 100:1
+!
+interface Ethernet1
+   description vEOS-SSW01 - Ethernet2
+   no switchport
+   ip address 10.10.2.2/24
+!
+interface Ethernet2
+   description vEOS-SSW02 - Ethernet2
+   no switchport
+   ip address 10.20.2.2/24
+!
+interface Ethernet3
+   no switchport
+!
+interface Ethernet4
+!
+interface Ethernet5
+!
+interface Ethernet6
+!
+interface Ethernet7
+!
+interface Ethernet8
+!
+interface Loopback112
+   ip address 112.1.1.1/32
+!
+interface Management1
+   vrf forwarding MGMT
+   ip address 192.168.0.22/24
+!
+ip routing
+no ip routing vrf MGMT
+!
+router bgp 202
+   maximum-paths 2 ecmp 2
+   neighbor SPINE peer-group
+   neighbor SPINE maximum-routes 12000 
+   neighbor 10.10.2.1 peer-group SPINE
+   neighbor 10.10.2.1 remote-as 100
+   neighbor 10.20.2.1 peer-group SPINE
+   neighbor 10.20.2.1 remote-as 100
+   network 112.1.1.1/32
+!
+management api http-commands
+   no shutdown
+   !
+   vrf MGMT
+      no shutdown
+!
+end

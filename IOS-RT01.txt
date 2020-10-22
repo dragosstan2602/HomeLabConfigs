@@ -1,0 +1,187 @@
+Building configuration...
+
+Current configuration : 2220 bytes
+!
+! Last configuration change at 08:23:13 UTC Thu Oct 22 2020
+!
+version 16.9
+service timestamps debug datetime msec
+service timestamps log datetime msec
+platform qfp utilization monitor load 80
+no platform punt-keepalive disable-kernel-core
+platform console serial
+!
+hostname IOS-RT01
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition MGMT
+ rd 1:100
+ !
+ address-family ipv4
+ exit-address-family
+!
+enable secret 5 $1$9lha$TxCpS63ceq2KMDRL2dW.m1
+!
+aaa new-model
+!
+!
+aaa authentication enable default none
+aaa authorization exec default local 
+!
+!
+!
+!
+!
+aaa session-id common
+!
+!
+!
+!
+!
+!
+!
+ip name-server vrf MGMT 192.168.0.254
+ip domain name home.lan
+!
+!
+!
+login on-success log
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+! 
+! 
+! 
+! 
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-4126021470
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4126021470
+ revocation-check none
+ rsakeypair TP-self-signed-4126021470
+!
+!
+crypto pki certificate chain TP-self-signed-4126021470
+!
+!
+!
+!
+!
+!
+!
+!
+license udi pid CSR1000V sn 9Z2IBLOS12D
+no license smart enable
+diagnostic bootup level minimal
+!
+spanning-tree extend system-id
+!
+!
+!
+username admin privilege 15 secret 5 $1$Ihew$cH2enkdpStpftRAcftfse/
+!
+redundancy
+!
+!
+!
+!
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+!
+!
+interface Loopback100
+ ip address 1.1.1.1 255.255.255.255
+ shutdown
+!
+interface GigabitEthernet1
+ vrf forwarding MGMT
+ ip address 192.168.0.53 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet4
+ no ip address
+ shutdown
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+ip forward-protocol nd
+ip http server
+ip http authentication local
+ip http secure-server
+ip http client source-interface GigabitEthernet1
+ip tftp source-interface GigabitEthernet1
+ip route vrf MGMT 0.0.0.0 0.0.0.0 192.168.0.1 name DEFAULT_ROUTE
+!
+ip ssh version 2
+ip ssh dh min size 4096
+!
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+ stopbits 1
+line vty 0 4
+!
+!
+!
+!
+!
+!
+end
