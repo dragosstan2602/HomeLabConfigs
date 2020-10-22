@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 2150 bytes
+Current configuration : 2212 bytes
 !
-! Last configuration change at 08:23:13 UTC Thu Oct 22 2020
+! Last configuration change at 09:30:31 UTC Thu Oct 22 2020
 !
 version 16.9
 service timestamps debug datetime msec
@@ -117,6 +117,10 @@ redundancy
 ! 
 ! 
 !
+!
+interface Loopback100
+ description TEST DESC
+ no ip address
 !
 interface GigabitEthernet1
  vrf forwarding MGMT
